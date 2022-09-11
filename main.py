@@ -74,12 +74,7 @@ def scoring(string):
     :param string: угаданное слово
     :return: баллы
     """
-
-    if len(string) == 2:
-         return 2
-    elif len(string) == 3:
-         return 3
-    elif len(string) == 4:
+    if len(string) == 4:
          return 6
     elif len(string) == 5:
          return 7
@@ -104,7 +99,7 @@ if __name__ == '__main__':
     print(f'{neme_player2} - буквы "', ', '.join(random_list_player2), '"')
     while True:
         print('-------------------------------')
-        #  Начинается логика хода 1 игрока
+        #  Начинается логика хода игрока1
         answer = input(f'Ходит {neme_player1}: \n')
         while not answer: answer = input(f'Ну введи что не будь {neme_player1}: \n')
         if answer == 'stop': break
@@ -124,7 +119,7 @@ if __name__ == '__main__':
             random_list_player1 = random_list_player1 + handing_random_letters(count - len(random_list_player1) + 1)
             print(f'Добавляю буквы"', ', '.join(random_list_player1), '"')
         print('-------------------------------')
-        #  Начинается логика хода 2 игрока
+        #  Начинается логика хода игрока2
         answer = input(f'Ходит {neme_player2}: \n')
         while not answer: answer = input(f'Ну введи что не будь {neme_player2}: \n')
         if answer == 'stop': break
