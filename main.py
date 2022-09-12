@@ -57,11 +57,11 @@ def deleting_guessed_letters(random_list_player, guessed_letters):
     :param guessed_letters: Отгаданное слово
     :return: Чистый список букв
     """
-    count = 0
+    cont = 0
     for s in guessed_letters:
         if s in random_list_player:
-            count += 1
-    if len(guessed_letters) == count:
+            cont += 1
+    if len(guessed_letters) == cont:
         for s in guessed_letters:
             random_list_player.remove(s)
         return random_list_player
@@ -83,6 +83,56 @@ def scoring(string):
     else:
         return len(string)
 
+def player_move(random_list_player, neme_player, count):
+    """
+    Производит ход игрока
+    :param random_list_player: Список букв с генерированных в случайном порядке
+    :param neme_player: Имя игрока
+    :param count: Количество букв в списке букв с генерированных в случайном порядке
+    :return: Количество баллов полученных за отгаданное слово
+    """
+    balls_player = 0
+    move_count = 0
+    while True:
+        if move_count == 0: answer = input(f'Ходит {neme_player}: \n')
+        if move_count != 0: answer = input()
+        while not answer: answer = input(f'Ну введи что не будь {neme_player}: \n')
+        if answer == 'stop':
+            balls_player = -1
+            print('-------------------------------')
+            return [balls_player, random_list_player]
+
+        if answer in russian_word:
+            random_list_player = deleting_guessed_letters(random_list_player, answer)
+            if count > len(random_list_player):
+
+                print(f'Такое слово есть. \n{neme_player} получает {scoring(answer)} баллов.')
+                balls_player =  scoring(answer)
+                random_list_player = random_list_player + handing_random_letters(count - len(random_list_player) + 1)
+                print(f'Добавляю буквы"', ', '.join(random_list_player), '"')
+                print('-------------------------------')
+                return [balls_player, random_list_player]
+            elif move_count == 0:
+                move_count = 1
+                print(f'Буквы не совподают, попробуй ещё раз.')
+            else:
+                print(f'Буквы не совподают. \n{neme_player} не получает очков.')
+                random_list_player = random_list_player + handing_random_letters(count - len(random_list_player) + 1)
+                print(f'Добавляю буквы"', ', '.join(random_list_player), '"')
+                print('-------------------------------')
+                return [balls_player, random_list_player]
+
+        elif  move_count == 0 :
+            move_count = 1
+            print(f'Такого слова нет, попробуй ещё раз.')
+        else:
+            print(f'Такого слова нет. \n{neme_player} не получает очков.')
+            random_list_player = random_list_player + handing_random_letters(count - len(random_list_player) + 1)
+            print(f'Добавляю буквы"', ', '.join(random_list_player), '"')
+            print('-------------------------------')
+            return [balls_player, random_list_player]
+
+
 if __name__ == '__main__':
     # Здесь происходит вся логика игры
     loading_from_text_files()
@@ -97,47 +147,24 @@ if __name__ == '__main__':
     random_list_player2 = handing_random_letters(count)
     print(f'{neme_player1} - буквы "',', '.join(random_list_player1),'"')
     print(f'{neme_player2} - буквы "', ', '.join(random_list_player2), '"')
+    print('-------------------------------')
     while True:
-        print('-------------------------------')
         #  Начинается логика хода игрока1
-        answer = input(f'Ходит {neme_player1}: \n')
-        while not answer: answer = input(f'Ну введи что не будь {neme_player1}: \n')
-        if answer == 'stop': break
-        if answer in russian_word:
-            random_list_player1 =  deleting_guessed_letters(random_list_player1, answer)
-            if count > len(random_list_player1):
-                print(f'Такое слово есть. \n{neme_player1} получает {scoring(answer)} баллов.')
-                balls_player1 += scoring(answer)
-                random_list_player1 = random_list_player1 + handing_random_letters(count - len(random_list_player1) + 1)
-                print(f'Добавляю буквы"', ', '.join(random_list_player1), '"')
-            else:
-                print(f'Буквы не совподают. \n{neme_player1} не получает очков.')
-                random_list_player1 = random_list_player1 + handing_random_letters(count - len(random_list_player1) + 1)
-                print(f'Добавляю буквы"', ', '.join(random_list_player1), '"')
+        rez = player_move(random_list_player1, neme_player1, count)
+        balls = rez[0]
+        random_list_player1 = rez[1]
+        if balls >= 0:
+            balls_player1 += balls
         else:
-            print(f'Такого слова нет. \n{neme_player1} не получает очков.')
-            random_list_player1 = random_list_player1 + handing_random_letters(count - len(random_list_player1) + 1)
-            print(f'Добавляю буквы"', ', '.join(random_list_player1), '"')
-        print('-------------------------------')
+            break
         #  Начинается логика хода игрока2
-        answer = input(f'Ходит {neme_player2}: \n')
-        while not answer: answer = input(f'Ну введи что не будь {neme_player2}: \n')
-        if answer == 'stop': break
-        if answer in russian_word:
-            random_list_player2 = deleting_guessed_letters(random_list_player2, answer)
-            if count > len(random_list_player2):
-                print(f'Такое слово есть. \n{neme_player2} получает {scoring(answer)} баллов.')
-                balls_player2 += scoring(answer)
-                random_list_player2 = random_list_player2 + handing_random_letters(count - len(random_list_player2) + 1)
-                print(f'Добавляю буквы"', ', '.join(random_list_player2), '"')
-            else:
-                print(f'Буквы не совподают. \n{neme_player2} не получает очков.')
-                random_list_player2 = random_list_player2 + handing_random_letters(count - len(random_list_player2) + 1)
-                print(f'Добавляю буквы"', ', '.join(random_list_player2), '"')
+        rez = player_move(random_list_player2, neme_player2, count)
+        balls = rez[0]
+        random_list_player2 = rez[1]
+        if balls >= 0:
+            balls_player2 += balls
         else:
-            print(f'Такого слова нет. \n{neme_player2} не получает очков.')
-            random_list_player2 = random_list_player2 + handing_random_letters(count - len(random_list_player2) + 1)
-            print(f'Добавляю буквы"', ', '.join(random_list_player2), '"')
+            break
         count += 1
     if balls_player1 > balls_player2:
         print(f'Выиграл {neme_player1}.\n Счет {balls_player1}:{balls_player2}')
